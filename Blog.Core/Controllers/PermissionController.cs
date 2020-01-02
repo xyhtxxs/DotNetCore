@@ -351,16 +351,18 @@ namespace Blog.Core.Controllers
 
             // 三种方式获取 uid
             var uidInHttpcontext1 = (from item in _httpContext.HttpContext.User.Claims
-                                     where item.Type == "jti"
+                                     where item.Type == "sub"
                                      select item.Value).FirstOrDefault().ObjToInt();
 
-            var uidInHttpcontext = (JwtHelper.SerializeJwt(_httpContext.HttpContext.Request.Headers["Authorization"].ObjToString().Replace("Bearer ", "")))?.Uid;
+            var roleId = (from item in _httpContext.HttpContext.User.Claims
+                          where item.Type == "role"
+                          select item.Value).FirstOrDefault().ObjToInt();
 
             var uName = _user.Name;
 
-            if (uid > 0 && uid == uidInHttpcontext)
+            if (uid > 0 && uid == uidInHttpcontext1)
             {
-                var roleId = ((await _userRoleServices.Query(d => d.IsDeleted == false && d.UserId == uid)).FirstOrDefault()?.RoleId).ObjToInt();
+                //var roleId = ((await _userRoleServices.Query(d => d.IsDeleted == false && d.UserId == uid)).FirstOrDefault()?.RoleId).ObjToInt();
                 if (roleId > 0)
                 {
                     var pids = (await _roleModulePermissionServices.Query(d => d.IsDeleted == false && d.RoleId == roleId)).Select(d => d.PermissionId.ObjToInt()).Distinct();

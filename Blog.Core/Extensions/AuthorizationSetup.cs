@@ -138,21 +138,27 @@ namespace Blog.Core.Extensions
                 o.DefaultForbidScheme = nameof(ApiResponseHandler);
             })
              // 添加JwtBearer服务
-             .AddJwtBearer(o =>
+             //.AddJwtBearer(o =>
+             //{
+             //    o.TokenValidationParameters = tokenValidationParameters;
+             //    o.Events = new JwtBearerEvents
+             //    {
+             //        OnAuthenticationFailed = context =>
+             //        {
+             //            // 如果过期，则把<是否过期>添加到，返回头信息中
+             //            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+             //            {
+             //                context.Response.Headers.Add("Token-Expired", "true");
+             //            }
+             //            return Task.CompletedTask;
+             //        }
+             //    };
+             //})
+             .AddIdentityServerAuthentication(options =>
              {
-                 o.TokenValidationParameters = tokenValidationParameters;
-                 o.Events = new JwtBearerEvents
-                 {
-                     OnAuthenticationFailed = context =>
-                     {
-                         // 如果过期，则把<是否过期>添加到，返回头信息中
-                         if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-                         {
-                             context.Response.Headers.Add("Token-Expired", "true");
-                         }
-                         return Task.CompletedTask;
-                     }
-                 };
+                 options.Authority = "http://ids.neters.club";
+                 options.RequireHttpsMetadata = false;
+                 options.ApiName = "blog.core.api";
              })
              .AddScheme<AuthenticationSchemeOptions, ApiResponseHandler>(nameof(ApiResponseHandler), o => { });
 
