@@ -156,7 +156,7 @@ namespace Blog.Core.Extensions
              //})
              .AddIdentityServerAuthentication(options =>
              {
-                 options.Authority = "http://ids.neters.club";
+                 options.Authority = "https://ids.neters.club";
                  options.RequireHttpsMetadata = false;
                  options.ApiName = "blog.core.api";
                  options.SupportedTokens = IdentityServer4.AccessTokenValidation.SupportedTokens.Jwt;
