@@ -164,18 +164,17 @@ namespace Blog.Core.Controllers
                     new Claim(ClaimTypes.Expiration, DateTime.Now.AddSeconds(_requirement.Expiration.TotalSeconds).ToString()) };
                 claims.AddRange(userRoles.Split(',').Select(s => new Claim(ClaimTypes.Role, s)));
 
-
-                var data = await _roleModulePermissionServices.RoleModuleMaps();
-                var list = (from item in data
-                            where item.IsDeleted == false
-                            orderby item.Id
-                            select new PermissionItem
-                            {
-                                Url = item.Module?.LinkUrl,
-                                Role = item.Role?.Name,
-                            }).ToList();
-
-                _requirement.Permissions = list;
+                // ids4禁用
+                //var data = await _roleModulePermissionServices.RoleModuleMaps();
+                //var list = (from item in data
+                //            where item.IsDeleted == false
+                //            orderby item.Id
+                //            select new PermissionItem
+                //            {
+                //                Url = item.Module?.LinkUrl,
+                //                Role = item.Role?.Name,
+                //            }).ToList();
+                //_requirement.Permissions = list;
 
                 //用户标识
                 var identity = new ClaimsIdentity(JwtBearerDefaults.AuthenticationScheme);
