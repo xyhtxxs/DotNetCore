@@ -132,45 +132,39 @@ namespace Blog.Core.Extensions
 
             //2.1【认证】、core自带官方JWT认证
             // 开启Bearer认证
-            services.AddAuthentication(o=> {
-                o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                o.DefaultChallengeScheme = nameof(ApiResponseHandler);
-                o.DefaultForbidScheme = nameof(ApiResponseHandler);
-            })
-             // 添加JwtBearer服务
-             //.AddJwtBearer(o =>
-             //{
-             //    o.TokenValidationParameters = tokenValidationParameters;
-             //    o.Events = new JwtBearerEvents
-             //    {
-             //        OnAuthenticationFailed = context =>
-             //        {
-             //            // 如果过期，则把<是否过期>添加到，返回头信息中
-             //            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-             //            {
-             //                context.Response.Headers.Add("Token-Expired", "true");
-             //            }
-             //            return Task.CompletedTask;
-             //        }
-             //    };
-             //})
+            //services.AddAuthentication(o=> {
+            //    o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    o.DefaultChallengeScheme = nameof(ApiResponseHandler);
+            //    o.DefaultForbidScheme = nameof(ApiResponseHandler);
+            //})
+            // 添加JwtBearer服务
+            //.AddJwtBearer(o =>
+            //{
+            //    o.TokenValidationParameters = tokenValidationParameters;
+            //    o.Events = new JwtBearerEvents
+            //    {
+            //        OnAuthenticationFailed = context =>
+            //        {
+            //            // 如果过期，则把<是否过期>添加到，返回头信息中
+            //            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+            //            {
+            //                context.Response.Headers.Add("Token-Expired", "true");
+            //            }
+            //            return Task.CompletedTask;
+            //        }
+            //    };
+            //})
+            //.AddScheme<AuthenticationSchemeOptions, ApiResponseHandler>(nameof(ApiResponseHandler), o => { });
+
+
+            //2.2【认证】、IdentityServer4 认证 (暂时忽略)
+            services.AddAuthentication("Bearer")
              .AddIdentityServerAuthentication(options =>
              {
                  options.Authority = "http://ids.neters.club";
                  options.RequireHttpsMetadata = false;
                  options.ApiName = "blog.core.api";
-             })
-             .AddScheme<AuthenticationSchemeOptions, ApiResponseHandler>(nameof(ApiResponseHandler), o => { });
-
-
-            //2.2【认证】、IdentityServer4 认证 (暂时忽略)
-            //services.AddAuthentication("Bearer")
-            //  .AddIdentityServerAuthentication(options =>
-            //  {
-            //      options.Authority = "http://localhost:5002";
-            //      options.RequireHttpsMetadata = false;
-            //      options.ApiName = "blog.core.api";
-            //  });
+             });
 
 
 
