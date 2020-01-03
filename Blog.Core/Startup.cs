@@ -177,6 +177,10 @@ namespace Blog.Core
 
             // 记录所有的访问记录
             loggerFactory.AddLog4Net();
+            
+            // 开启异常中间件，要放到管道最外层
+            app.UseExceptionHandlerMidd();
+
             // 记录请求与返回数据 
             app.UseReuestResponseLog();
             // signalr 
@@ -219,9 +223,13 @@ namespace Blog.Core
                 {
                     c.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"{ApiName} {version}");
                 });
+
                 // 将swagger首页，设置成我们自定义的页面，记得这个字符串的写法：解决方案名.index.html
-                c.IndexStream = () => GetType().GetTypeInfo().Assembly.GetManifestResourceStream("Blog.Core.index.html");//这里是配合MiniProfiler进行性能监控的，《文章：完美基于AOP的接口性能分析》，如果你不需要，可以暂时先注释掉，不影响大局。
-                c.RoutePrefix = ""; //路径配置，设置为空，表示直接在根域名（localhost:8001）访问该文件,注意localhost:8001/swagger是访问不到的，去launchSettings.json把launchUrl去掉，如果你想换一个路径，直接写名字即可，比如直接写c.RoutePrefix = "doc";
+                // index.html的属性，必须是设置为嵌入的资源
+                c.IndexStream = () => GetType().GetTypeInfo().Assembly.GetManifestResourceStream("Blog.Core.index.html");
+
+                // 路径配置，设置为空，表示直接在根域名（localhost:8001）访问该文件,注意localhost:8001/swagger是访问不到的，去launchSettings.json把launchUrl去掉，如果你想换一个路径，直接写名字即可，比如直接写c.RoutePrefix = "doc";
+                c.RoutePrefix = ""; 
             });
             #endregion
 
@@ -248,8 +256,6 @@ namespace Blog.Core
             // 然后是授权中间件
             app.UseAuthorization();
 
-            // 开启异常中间件，要放到最后
-            //app.UseExceptionHandlerMidd();
 
             app.UseMiniProfiler();
 
