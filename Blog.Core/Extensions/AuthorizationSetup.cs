@@ -159,6 +159,9 @@ namespace Blog.Core.Extensions
                  options.Authority = "http://ids.neters.club";
                  options.RequireHttpsMetadata = false;
                  options.ApiName = "blog.core.api";
+                 options.SupportedTokens = IdentityServer4.AccessTokenValidation.SupportedTokens.Jwt;
+                 options.ApiSecret = "api_secret";
+
              })
              .AddScheme<AuthenticationSchemeOptions, ApiResponseHandler>(nameof(ApiResponseHandler), o => { });
 
