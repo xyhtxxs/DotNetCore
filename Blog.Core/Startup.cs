@@ -37,6 +37,8 @@ namespace Blog.Core
         /// log4net 仓储库
         /// </summary>
         public static ILoggerRepository Repository { get; set; }
+        private IServiceCollection _services;
+        private List<Type> tsDIAutofac = new List<Type>();
         private static readonly ILog log =
         LogManager.GetLogger(typeof(GlobalExceptionsFilter));
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
@@ -92,6 +94,7 @@ namespace Blog.Core
                 //options.SerializerSettings.DateFormatString = "yyyy-MM-dd";
             });
 
+            _services = services;
         }
 
         // 注意在CreateDefaultBuilder中，添加Autofac服务工厂
@@ -171,6 +174,10 @@ namespace Blog.Core
 
             #endregion
 
+
+            // 这里和注入没关系，只是获取注册列表，请忽略
+            tsDIAutofac.AddRange(assemblysServices.GetTypes().ToList());
+            tsDIAutofac.AddRange(assemblysRepository.GetTypes().ToList());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -192,6 +199,7 @@ namespace Blog.Core
             #region Environment
             if (env.IsDevelopment())
             {
+                app.UseAllServicesMildd(_services, tsDIAutofac);
                 // 在开发环境中，使用异常页面，这样可以暴露错误堆栈信息，所以不要放在生产环境。
                 app.UseDeveloperExceptionPage();
 
@@ -230,7 +238,7 @@ namespace Blog.Core
                 c.IndexStream = () => GetType().GetTypeInfo().Assembly.GetManifestResourceStream("Blog.Core.index.html");
 
                 // 路径配置，设置为空，表示直接在根域名（localhost:8001）访问该文件,注意localhost:8001/swagger是访问不到的，去launchSettings.json把launchUrl去掉，如果你想换一个路径，直接写名字即可，比如直接写c.RoutePrefix = "doc";
-                c.RoutePrefix = ""; 
+                c.RoutePrefix = "";
             });
             #endregion
 
