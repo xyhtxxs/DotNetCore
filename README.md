@@ -1,4 +1,4 @@
-Dev Build:: 
+﻿Dev Build:: 
 
 [![Gitter](https://badges.gitter.im/Blog_core/community.svg)](https://gitter.im/Blog_core/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)  [![sdk](https://img.shields.io/badge/sdk-3.1-d.svg)](#)  [![Build status](https://github.com/anjoy8/blog.core/workflows/.NET%20Core/badge.svg)](https://github.com/anjoy8/Blog.Core/actions) [![codecov](https://codecov.io/gh/anjoy8/Blog.Core/branch/master/graph/badge.svg)](https://codecov.io/gh/anjoy8/Blog.Core)  [![License MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/anjoy8/Blog.Core/blob/master/LICENSE) [![Language](https://img.shields.io/badge/language-csharp-d.svg)](#) 
 [![star this repo](http://githubbadges.com/star.svg?user=anjoy8&repo=blog.core&style=flat)](https://github.com/boennemann/badges) 
@@ -41,8 +41,8 @@ Dev Build::
 - [x] 使用SingleR推送日志信息到管理后台；
 - [x] 搭配前端Blog项目，vue开发；
 - [x] 搭配一个Admin管理后台，用vue+ele开发；
-- [ ] IdentityServer4 认证（更新中...);
-- [ ] API 限速;
+- [x] IdentityServer4 认证;
+- [x] API 限速;
 - [ ] Redis 队列;
 - [ ] 作业调度 Quartz.net;
 - [ ] Sqlsugar 读写分离;
