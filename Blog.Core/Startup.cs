@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using AspNetCoreRateLimit;
 using Autofac;
 using Autofac.Extras.DynamicProxy;
 using Blog.Core.AOP;
@@ -65,6 +66,7 @@ namespace Blog.Core
             services.AddJobSetup();
             services.AddHttpContextSetup();
             services.AddAuthorizationSetup();
+            services.AddIpPolicyRateLimitSetup(Configuration);
 
             services.AddSignalR().AddNewtonsoftJsonProtocol();
 
@@ -174,13 +176,12 @@ namespace Blog.Core
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IBlogArticleServices _blogArticleServices, ILoggerFactory loggerFactory)
         {
-
+            // Ip限流,尽量放管道外层
+            app.UseIpRateLimiting();
             // 记录所有的访问记录
             loggerFactory.AddLog4Net();
-            
             // 开启异常中间件，要放到管道最外层
             app.UseExceptionHandlerMidd();
-
             // 记录请求与返回数据 
             app.UseReuestResponseLog();
             // signalr 
