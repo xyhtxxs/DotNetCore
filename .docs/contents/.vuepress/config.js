@@ -35,6 +35,7 @@ function getGuideSidebar (groupA) {
         children: [
           '',
           'getting-started',
+          'function-sheet',
           'cheat-sheet'
         ]
       }
