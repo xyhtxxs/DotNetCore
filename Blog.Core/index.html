@@ -97,6 +97,7 @@
     <script src="./swagger-ui-standalone-preset.js"></script>
     <script>
         var int = null;
+        var swaggerUi = null;
         window.onload = function () {
             var configObject = JSON.parse('%(ConfigObject)');
             var oauthConfigObject = JSON.parse('%(OAuthConfigObject)');
@@ -112,26 +113,17 @@
 
             // Build a system
             const ui = SwaggerUIBundle(configObject);
-
+            swaggerUi = ui;
             // Apply OAuth config
             ui.initOAuth(oauthConfigObject);
 
 
-            int = setInterval(function () {
-                getData();
-            }, 1000);
+
             $("img").attr("src", "./logo/favicon-32x32.png");
-        }
-        function getData() {
 
-            console.log(1);
-            if ($(".qqgroup").length <= 0) {
-                $('.info').after("<div class='qqgroup'><img  src='http://vueadmin.neters.club/img/QQGroup.14acbf6e.png' alt='QQ二维码' style='width: 200px;'></div><div style='clear: both;'></div>");
-                console.log(2);
-                clearInterval(int);
-            }
-
+             $('body').before("<div class='qqgroup'><img  src='http://vueadmin.neters.club/img/QQGroup.14acbf6e.png' alt='QQ二维码' style='width: 160px;display: inline-block;position: absolute;right: 88px;top: 60px;padding: 10px;box-shadow: 0 2px 1px rgba(0,0,0,0.5);'></div><div style='clear: both;'></div>");
         }
+
 
     </script>
 </body>
