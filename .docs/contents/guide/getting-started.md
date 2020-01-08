@@ -67,7 +67,14 @@ Gitee（国内） 下载 [https://gitee.com/laozhangIsPhi/Blog.Core](https://git
 ## 如何项目重命名
 1、双击项目根目录下的 `CreateYourProject.bat` 批处理文件；  
 2、根据提示，输入自己想要的项目名称即可；  
-3、在根目录会有一个 `.1YourProject` 文件夹，里边即你的项目；
+3、在根目录会有一个 `.1YourProject` 文件夹，里边即你的项目；  
+
+
+## 新增实体模块后如何迁移到数据库
+1、在 `Blog.Core.Model` 项目目录下的 `Seed` 文件夹下，找到 `DBSeed` 类；  
+2、根据提示，找到生成table的地方 `myContext.CreateTableByEntity`；  
+3、添加进去你新增的实体类，当然也可以用下边的单独写法；  
+4、编译项目，没错后，运行,则数据库更新完毕；  
 
 
 ## 发布与部署
