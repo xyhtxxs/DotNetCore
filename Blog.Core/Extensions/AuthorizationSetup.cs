@@ -118,7 +118,7 @@ namespace Blog.Core.Extensions
              // 2.添加Identityserver4认证
              .AddIdentityServerAuthentication(options =>
              {
-                 options.Authority = "https://ids.neters.club";
+                 options.Authority = Appsettings.app(new string[] { "Startup", "IdentityServer4", "AuthorizationUrl" });
                  options.RequireHttpsMetadata = false;
                  options.ApiName = "blog.core.api";
                  options.SupportedTokens = IdentityServer4.AccessTokenValidation.SupportedTokens.Jwt;
