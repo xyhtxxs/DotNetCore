@@ -60,7 +60,7 @@ Appsettings.app(new string[] { "AppSettings", "RedisCachingAOP", "Enabled" })
 
 ## Authorization-Ids4
 
-本系统 v1.0 版本（目前的 ids4 分支，如果没有该分支，表示已经迁移到主分支）已经实现了对 `IdentityServer4` 的迁移，已经支持了统一授权认证，和 `blog` 项目、`Admin` 项目、`DDD` 项目等一起，使用一个统一的认证中心。  
+本系统 v1.0 版本（目前的 is4 分支，如果没有该分支，表示已经迁移到主分支）已经实现了对 `IdentityServer4` 的迁移，已经支持了统一授权认证，和 `blog` 项目、`Admin` 项目、`DDD` 项目等一起，使用一个统一的认证中心。  
   
 具体的代码参考：`Blog.Core\Blog.Core\Extensions` 文件夹下的 `AuthorizationSetup.cs` 中 `Ids4` 认证的部分，注意需要引用指定的 `nuget` 包：   
 
@@ -77,6 +77,59 @@ Appsettings.app(new string[] { "AppSettings", "RedisCachingAOP", "Enabled" })
   })
 
 ```
+  
+### 如何在Swagger中配置？
+很简单，直接在 `Swagger` 中直接接入 `oauth、Implicit` 即可：  
+
+```
+ //接入identityserver4
+ c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+ {
+     Type = SecuritySchemeType.OAuth2,
+     Flows = new OpenApiOAuthFlows
+     {
+         Implicit = new OpenApiOAuthFlow
+         {
+             AuthorizationUrl = new Uri($"http://localhost:5004/connect/authorize"),
+             Scopes = new Dictionary<string, string> {
+                 {
+                     "blog.core.api","ApiResource id" // 资源服务 id
+                 }
+             }
+         }
+     }
+ });
+
+```
+  
+然后在 `IdentityServer4`  项目中，做指定的修改：  
+
+```
+ new Client {
+     ClientId = "blogadminjs",
+     ClientName = "Blog.Admin JavaScript Client",
+     AllowedGrantTypes = GrantTypes.Implicit,
+     AllowAccessTokensViaBrowser = true,
+
+     RedirectUris =
+     {
+         "http://vueadmin.neters.club/callback",
+         // 这里要配置回调地址
+         "http://localhost:8081/oauth2-redirect.html" 
+     },
+     PostLogoutRedirectUris = { "http://vueadmin.neters.club" },
+     AllowedCorsOrigins =     { "http://vueadmin.neters.club" },
+
+     AllowedScopes = {
+         IdentityServerConstants.StandardScopes.OpenId,
+         IdentityServerConstants.StandardScopes.Profile,
+         "roles",
+         "blog.core.api"
+     }
+ },
+
+```
+
 
 
 ## Authorization-JWT 
