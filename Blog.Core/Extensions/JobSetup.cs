@@ -1,5 +1,7 @@
 ﻿using Blog.Core.Tasks;
+using Blog.Core.Tasks.QuartzNet;
 using Microsoft.Extensions.DependencyInjection;
+using Quartz.Spi;
 using System;
 
 namespace Blog.Core.Extensions
@@ -15,6 +17,10 @@ namespace Blog.Core.Extensions
 
             services.AddHostedService<Job1TimedService>();
             services.AddHostedService<Job2TimedService>();
+
+            //services.AddSingleton<IJobFactory, JobFactory>();
+            //services.AddTransient<Job1Quartz>();//Job使用瞬时依赖注入
+
         }
     }
 }
