@@ -77,6 +77,16 @@ Gitee（国内） 下载 [https://gitee.com/laozhangIsPhi/Blog.Core](https://git
 4、编译项目，没错后，运行,则数据库更新完毕；  
 
 
+## 新增实体后，如何进行增删改查CURD操作
+1、随便找一个含有业务逻辑的 `controller` 参考一下即可；  
+2、主要 `api` 是通过 `Service` 服务层提供业务逻辑；  
+3、然后服务层通过 `Repository` 仓储层封装持久化操作；  
+4、每一个表基本上对应一个仓储类，基本的操作都封装到了 `BaseRepository.cs` 基类仓储中；  
+5、添加完业务逻辑，记得要 `F6` 重新编译一下，因为项目间引用解耦了；  
+6、项目已经自动注入了，直接在控制器使用对应的服务层接口就行： `IxxxxService` ;  
+
+
+
 ## 发布与部署
 1、双击项目根目录下的 `Blog.Core.Publish.bat`批处理文件；  
 2、执行完成后，根目录会有一个`.PublishFiles` 文件夹，就是发布后的项目；

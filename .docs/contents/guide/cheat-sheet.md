@@ -209,14 +209,121 @@ models = _mapper.Map<BlogViewModels>(blogArticle);
 
 
 ## DI-AutoFac
-精力有限，还是更新中...   
-如果你愿意帮忙，可以直接在GitHub中，提交pull request，   
-我会在后边的贡献者页面里，列出你的名字和项目地址做推广
+
+项目使用了依赖注入，除了原生的依赖注入以外，更多的使用的是第三方组件 `Autofac` ：  
+1、引用依赖包：
+```
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.1" />
+    <PackageReference Include="Autofac.Extras.DynamicProxy" Version="4.5.0" />
+
+```
+主要是第一个 `nuget` 包，下边的是为了实现动态代理 `AOP` 操作；  
+
+2、项目之间采用引用解耦的方式，通过反射来注入服务层和仓储层的程序集 `dll` 来实现批量注入，更方便，以后每次新增和修改 `Service` 层和 `Repository` 层，只需要 `F6` 编译一下即可，具体代码查看 `Startup.cs`：  
+
+```
+
+
+        // 注意在CreateDefaultBuilder中，添加Autofac服务工厂
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            var basePath = Microsoft.DotNet.PlatformAbstractions.ApplicationEnvironment.ApplicationBasePath;
+            //builder.RegisterType<AdvertisementServices>().As<IAdvertisementServices>();
+
+
+            #region 带有接口层的服务注入
+
+
+            var servicesDllFile = Path.Combine(basePath, "Blog.Core.Services.dll");
+            var repositoryDllFile = Path.Combine(basePath, "Blog.Core.Repository.dll");
+
+            if (!(File.Exists(servicesDllFile) && File.Exists(repositoryDllFile)))
+            {
+                throw new Exception("Repository.dll和service.dll 丢失，因为项目解耦了，所以需要先F6编译，再F5运行，请检查 bin 文件夹，并拷贝。");
+            }
+
+
+
+            // AOP 开关，如果想要打开指定的功能，只需要在 appsettigns.json 对应对应 true 就行。
+            var cacheType = new List<Type>();
+            if (Appsettings.app(new string[] { "AppSettings", "RedisCachingAOP", "Enabled" }).ObjToBool())
+            {
+                builder.RegisterType<BlogRedisCacheAOP>();
+                cacheType.Add(typeof(BlogRedisCacheAOP));
+            }
+            if (Appsettings.app(new string[] { "AppSettings", "MemoryCachingAOP", "Enabled" }).ObjToBool())
+            {
+                builder.RegisterType<BlogCacheAOP>();
+                cacheType.Add(typeof(BlogCacheAOP));
+            }
+            if (Appsettings.app(new string[] { "AppSettings", "TranAOP", "Enabled" }).ObjToBool())
+            {
+                builder.RegisterType<BlogTranAOP>();
+                cacheType.Add(typeof(BlogTranAOP));
+            }
+            if (Appsettings.app(new string[] { "AppSettings", "LogAOP", "Enabled" }).ObjToBool())
+            {
+                builder.RegisterType<BlogLogAOP>();
+                cacheType.Add(typeof(BlogLogAOP));
+            }
+
+            // 获取 Service.dll 程序集服务，并注册
+            var assemblysServices = Assembly.LoadFrom(servicesDllFile);
+            builder.RegisterAssemblyTypes(assemblysServices)
+                      .AsImplementedInterfaces()
+                      .InstancePerDependency()
+                      .EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy;
+                      .InterceptedBy(cacheType.ToArray());//允许将拦截器服务的列表分配给注册。
+
+            // 获取 Repository.dll 程序集服务，并注册
+            var assemblysRepository = Assembly.LoadFrom(repositoryDllFile);
+            builder.RegisterAssemblyTypes(assemblysRepository)
+                   .AsImplementedInterfaces()
+                   .InstancePerDependency();
+
+            #endregion
+
+            #region 没有接口层的服务层注入
+
+            //因为没有接口层，所以不能实现解耦，只能用 Load 方法。
+            //注意如果使用没有接口的服务，并想对其使用 AOP 拦截，就必须设置为虚方法
+            //var assemblysServicesNoInterfaces = Assembly.Load("Blog.Core.Services");
+            //builder.RegisterAssemblyTypes(assemblysServicesNoInterfaces);
+
+            #endregion
+
+            #region 没有接口的单独类 class 注入
+
+            //只能注入该类中的虚方法
+            builder.RegisterAssemblyTypes(Assembly.GetAssembly(typeof(Love)))
+                .EnableClassInterceptors()
+                .InterceptedBy(cacheType.ToArray());
+
+            #endregion
+
+
+            // 这里和注入没关系，只是获取注册列表，请忽略
+            tsDIAutofac.AddRange(assemblysServices.GetTypes().ToList());
+            tsDIAutofac.AddRange(assemblysRepository.GetTypes().ToList());
+        }
+
+```
+
+3、然后 `Program.cs` 中也要加一句话：` .UseServiceProviderFactory(new AutofacServiceProviderFactory()) //<--NOTE THIS `  
+
+
 
 ## DI-NetCore
-精力有限，还是更新中...   
-如果你愿意帮忙，可以直接在GitHub中，提交pull request，   
-我会在后边的贡献者页面里，列出你的名字和项目地址做推广
+
+除了主要的 `Autofac` 依赖注入以外，也减少的使用了原生的依赖注入方式，很简单，比如这样的：  
+```
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            // 注入权限处理器
+            services.AddScoped<IAuthorizationHandler, PermissionHandler>();
+            services.AddSingleton(permissionRequirement);
+```
+
 
 ## Filter
 精力有限，还是更新中...   
