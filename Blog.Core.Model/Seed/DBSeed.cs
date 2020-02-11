@@ -12,8 +12,8 @@ namespace Blog.Core.Model.Models
     public class DBSeed
     {
         // 这是我的在线demo数据，比较多，且杂乱
-        // 国内网络不好的，可以使用这个 gitee 上的地址：https://gitee.com/laozhangIsPhi/Blog.Data.Share/tree/master/Blog.Core.Data.json/{0}.tsv
-        private static string GitJsonFileFormat = "https://github.com/anjoy8/Blog.Data.Share/raw/master/Blog.Core.Data.json/{0}.tsv";
+        // 国内网络不好的，可以使用这个 gitee 上的地址：https://gitee.com/laozhangIsPhi/Blog.Data.Share/tree/master/BlogCore.Data.json/{0}.tsv
+        private static string GitJsonFileFormat = "https://github.com/anjoy8/Blog.Data.Share/raw/master/BlogCore.Data.json/{0}.tsv";
 
 
         // 这里我把重要的权限数据提出来的精简版，默认一个Admin_Role + 一个管理员用户，
