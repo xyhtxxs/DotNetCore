@@ -48,7 +48,6 @@ namespace Blog.Core.AOP
                         {
                             invocation.ReturnValue = InternalAsyncHelper.AwaitTaskWithPostActionAndFinally(
                                 (Task)invocation.ReturnValue,
-                                async () => await TestActionAsync(invocation),
                                 ex =>
                                 {
                                     _unitOfWork.RollbackTran();
@@ -60,7 +59,6 @@ namespace Blog.Core.AOP
                             invocation.ReturnValue = InternalAsyncHelper.CallAwaitTaskWithPostActionAndFinallyAndGetResult(
                              invocation.Method.ReturnType.GenericTypeArguments[0],
                              invocation.ReturnValue,
-                             async () => await TestActionAsync(invocation),
                              ex =>
                              {
                                  _unitOfWork.RollbackTran();
@@ -93,10 +91,6 @@ namespace Blog.Core.AOP
                 (method.ReturnType.IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
                 );
         }
-        private async Task TestActionAsync(IInvocation invocation)
-        {
-        }
-
     }
 
 
