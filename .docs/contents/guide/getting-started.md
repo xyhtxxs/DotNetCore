@@ -13,27 +13,33 @@ Gitee（国内） 下载 [https://gitee.com/laozhangIsPhi/Blog.Core](https://git
 ## 编译与运行
 1、拿到项目后，双击 `Blog.Core.sln` 解决方案；  
 2、首先 `F6` 编译，看是否有错误；  
-3、然后 `F5` 运行，调起 `8081` 端口，浏览器查看效果；
+3、然后 `F5` 运行，调起 `8081` 端口，浏览器查看效果；  
+4、因为系统默认的是 `sqlite` 数据库，如果你想换其他数据库，请看下边；    
+5、注意：本系统是直接自动生成数据库和数据的，不用手动创建数据库；  
+
 
 
 ## 如何配置数据库连接字符串
+
 1、打开 `Blog.Core` 项目下的 `appsettings.json` 文件；  
 2、修改 `DBS` 字节内容，配置对应的连接字符串，注意`DBType`对应不同的数据库类型；  
-3、单库操作只需要把你想要运行的数据库 `Enabled` 为 `true` 即可，其他都要设置 `false`；  
-4、举例来说，比如你想使用`Sqlserver`数据库，连接字符串为 `Server=.;Database=WMBlogDB;User ID=sa;Password=123; `你可以这么配置:  
+3、把你想要运行的数据库 `Enabled` 为 `true` 即可，其他都要设置 `false`；  
+4、然后 `MainDB` 设置为下边你使用的指定 `ConnId`:  
 
 ```
+  "MainDB": "WMBLOG_MSSQL", //当前项目的主库，所对应的连接字符串的Enabled必须为true
+  "MutiDBEnabled": false, //是否开启多库
   "DBS": [
     {
       "ConnId": "WMBLOG_SQLITE",
       "DBType": 2,// sqlite数据库
-      "Enabled": false,// 设置为false，不启用
+      "Enabled": true,// 设置为true，启用1
       "Connection": "WMBlog.db" //只写数据库名就行
     },
     {
       "ConnId": "WMBLOG_MSSQL",
       "DBType": 1,// sqlserver数据库
-      "Enabled": true,// 设置为true，启用
+      "Enabled": true,// 设置为true，启用2
       "Connection": "Server=.;Database=WMBlogDB;User ID=sa;Password=123;",
       "ProviderName": "System.Data.SqlClient"
     },
@@ -51,12 +57,13 @@ Gitee（国内） 下载 [https://gitee.com/laozhangIsPhi/Blog.Core](https://git
     }
   ],
 ```
+  
 
 5、如果你想多库操作，需要配置
 ```
-1：MainDB 设置为主库的 ConnId；
-2：MutiDBEnabled设置为true，
-3：把下边想要连接的多个连接字符串都设置为true
+  a：MainDB 设置为主库的 ConnId；
+  b：MutiDBEnabled设置为true，
+  c：把下边想要连接的多个连接字符串都设置为true
 ```
 
 ## 如何配置项目端口号
